@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Data Pasien - Pharmora</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sidebar.css">
+<style>
+  :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; }
+  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  html, body { margin: 0; background: var(--bg); }
+  body { zoom: 0.75; overflow-x: hidden; }
+  .layout { display: flex; height: calc(100vh / 0.75); min-height: 900px; }
+
+  .konten { flex: 1; padding: 0 40px; min-width: 0; height: 100%; overflow: hidden; }
+  .sapaan { margin: 90px 0 0 0; font-size: 36px; font-weight: 600; color: #0b2a27; }
+  .kartu { background: var(--putih); width: 100%; margin-top: 50px; padding: 30px 40px 36px; height: 640px; display: flex; flex-direction: column; }
+  .kartu-atas { display: flex; justify-content: space-between; align-items: center; }
+  .kartu h1 { margin: 0; color: var(--hijau-tua); font-size: 40px; font-weight: 600; }
+
+  .tambah {
+    width: 300px; height: 68px; background: var(--hijau-tua); color: var(--putih); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 600; text-decoration: none; transition: background 200ms ease-out;
+  }
+  .tambah:hover { background: var(--tosca); }
+
+  .cari { display: flex; align-items: center; gap: 14px; margin: 26px 0 34px; padding-left: 12px; }
+  .cari input { border: none; outline: none; font-size: 21px; color: #444; width: 400px; background: transparent; }
+  .cari input::placeholder { color: #777; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--bg); color: var(--hijau-tua); font-size: 16px; font-weight: 600; text-align: left; height: 54px; padding: 0 12px; border-bottom: 2px solid #555; }
+  td { color: var(--hijau-tua); font-size: 16px; font-weight: 600; height: 58px; padding: 0 12px; border-bottom: 1px solid #555; }
+  tbody tr { transition: background 200ms ease-out; }
+  tbody tr:hover { background: #f1fbf9; }
+  .aksi { white-space: nowrap; }
+  .aksi svg { width: 28px; height: 28px; margin-right: 8px; cursor: pointer; vertical-align: middle; border-radius: 6px; padding: 3px; transition: background 200ms ease-out; }
+  .aksi svg:hover { background: #d8f3ee; }
+  .kosong { text-align: center; }
+
+  .halaman { margin-top: auto; display: flex; gap: 12px; justify-content: flex-end; }
+  .halaman button {
+    width: 56px; height: 56px; background: var(--putih); border: 1px solid var(--tosca); border-radius: 10px;
+    color: var(--hijau-tua); font-size: 22px; cursor: pointer; transition: background 200ms ease-out, color 200ms ease-out;
+  }
+  .halaman button:hover { background: var(--tosca); color: var(--putih); }
+
+  #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 10; }
+  #popup { background: var(--bg); color: var(--hijau-tua); width: 436px; height: 315px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; cursor: pointer; }
+  .ikon { width: 90px; height: 90px; border-radius: 50%; background: var(--hijau-tua); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+  .ikon.polos { background: transparent; border-radius: 0; }
+  #pesan { font-size: 24px; font-weight: 600; margin: 0; color: var(--hijau-tua); }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="konten">
+    <div class="sapaan">Selamat Datang, Haechan Lee</div>
+
+    <section class="kartu">
+      <div class="kartu-atas">
+        <h1>Data Pasien</h1>
+        <a class="tambah" href="pasien.html">+ &nbsp;Tambah Pasien</a>
+      </div>
+
+      <div class="cari">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2.5">
+          <circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/>
+        </svg>
+        <input id="cari" placeholder="Cari Pasien..." oninput="halaman = 1; tampil()">
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:5%">No</th>
+            <th style="width:20%">Nama Pasien</th>
+            <th style="width:15%">Tanggal Lahir</th>
+            <th style="width:13%">Jenis Kelamin</th>
+            <th style="width:15%">No HP</th>
+            <th style="width:22%">Alamat</th>
+            <th style="width:10%">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="isi"><tr><td colspan="7" class="kosong">Memuat data...</td></tr></tbody>
+      </table>
+
+      <div class="halaman" id="halaman"></div>
+    </section>
+  </main>
+</div>
+
+<div id="overlay" onclick="tutupPopup()">
+  <div id="popup">
+    <div class="ikon" id="ikon"></div>
+    <p id="pesan"></p>
+  </div>
+</div>
+
+<script src="sidebar.js"></script>
+<script>
+const API = "http://localhost:8081/api/pasien";
+const PER_HALAMAN = 5;
+let semua = [];
+let halaman = parseInt(sessionStorage.getItem("halamanPasien") || "1", 10);
+let timerPopup = null;
+
+const IKON_EDIT = `<svg viewBox="0 0 24 24" fill="none" stroke="#20BFA9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>`;
+const IKON_HAPUS = `<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M5 6l1 15h12l1-15"/><path d="M10 11v6M14 11v6"/></svg>`;
+const POPUP_SILANG = `<svg width="50" height="50" viewBox="0 0 48 48" fill="none"><path d="M10 10 L38 38 M38 10 L10 38" stroke="#FFFFFF" stroke-width="7" stroke-linecap="square"/></svg>`;
+const POPUP_SAMPAH = `<svg width="90" height="90" viewBox="0 0 90 90" fill="none" stroke="#006B63" stroke-width="7" stroke-linejoin="round">
+  <path d="M12 22 H78"/><rect x="34" y="10" width="22" height="12"/>
+  <path d="M18 22 V80 H72 V22"/><path d="M36 38 V64 M54 38 V64"/></svg>`;
+
+async function muat() {
+  try {
+    const res = await fetch(API);
+    semua = await res.json();
+    tampil();
+  } catch (e) {
+    document.getElementById("isi").innerHTML = '<tr><td colspan="7" class="kosong">Gagal memuat data pasien</td></tr>';
+  }
+}
+
+function tampil() {
+  const kata = document.getElementById("cari").value.trim().toLowerCase();
+  const hasil = semua.filter(p => (" " + p.NamaPasien.toLowerCase()).includes(" " + kata));
+  const totalHal = Math.max(1, Math.ceil(hasil.length / PER_HALAMAN));
+  if (halaman > totalHal) halaman = totalHal;
+  if (halaman < 1) halaman = 1;
+  sessionStorage.setItem("halamanPasien", halaman);
+
+  const mulai = (halaman - 1) * PER_HALAMAN;
+  const tbody = document.getElementById("isi");
+  tbody.innerHTML = "";
+  if (hasil.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" class="kosong">Data tidak ditemukan</td></tr>';
+  }
+
+  hasil.slice(mulai, mulai + PER_HALAMAN).forEach((p, i) => {
+    const tr = document.createElement("tr");
+    [mulai + i + 1, p.NamaPasien, p.TglLahir, p.JenisKelamin, p.NoHP, p.Alamat].forEach(n => {
+      const td = document.createElement("td");
+      td.textContent = n;
+      tr.appendChild(td);
+    });
+    const aksi = document.createElement("td");
+    aksi.className = "aksi";
+    aksi.innerHTML = IKON_EDIT + IKON_HAPUS;
+    aksi.querySelectorAll("svg")[0].onclick = () => {
+      location.href = "pasien.html?id=" + encodeURIComponent(p.IdPasien);
+    };
+    aksi.querySelectorAll("svg")[1].onclick = () => hapus(p.IdPasien);
+    tr.appendChild(aksi);
+    tbody.appendChild(tr);
+  });
+
+  const box = document.getElementById("halaman");
+  box.innerHTML = "";
+  if (halaman > 1) box.appendChild(tombol("‹", () => { halaman--; tampil(); }));
+  box.appendChild(tombol(String(halaman), () => {}));
+  if (halaman < totalHal) box.appendChild(tombol("›", () => { halaman++; tampil(); }));
+}
+
+function tombol(teks, aksi) {
+  const b = document.createElement("button");
+  b.textContent = teks;
+  b.onclick = aksi;
+  return b;
+}
+
+async function hapus(id) {
+  try {
+    const res = await fetch(API + "/" + encodeURIComponent(id), { method: "DELETE" });
+    const hasil = await res.json();
+    if (res.ok) {
+      tampilPopup("Data Berhasil Dihapus", "hapus");
+      await muat();
+      timerPopup = setTimeout(tutupPopup, 2000);
+    } else {
+      tampilPopup(hasil.pesan, "gagal");
+    }
+  } catch (e) {
+    tampilPopup("Tidak dapat terhubung ke server", "gagal");
+  }
+}
+
+function tampilPopup(teks, jenis) {
+  clearTimeout(timerPopup);
+  const ikon = document.getElementById("ikon");
+  ikon.className = "ikon" + (jenis === "hapus" ? " polos" : "");
+  ikon.innerHTML = jenis === "hapus" ? POPUP_SAMPAH : POPUP_SILANG;
+  document.getElementById("pesan").innerText = teks;
+  document.getElementById("overlay").style.display = "flex";
+}
+
+function tutupPopup() {
+  clearTimeout(timerPopup);
+  document.getElementById("overlay").style.display = "none";
+}
+
+muat();
+</script>
+</body>
+</html>

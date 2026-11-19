@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Tambah Pasien - Pharmora</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; }
+  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  body { margin: 0; background: var(--bg); min-height: 100vh; zoom: 0.75; }
+
+  header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px 0; }
+  header img { width: 223px; height: 68px; display: block; }
+  .kembali { color: var(--tosca); font-weight: 500; font-size: 20px; text-decoration: none; }
+  .kembali:hover { color: var(--hijau-tua); }
+
+  main { padding: 0 44px; }
+  h1 { color: var(--hijau-tua); font-size: 32px; font-weight: 600; margin: 20px 0 40px; }
+
+  form { margin-left: 22px; width: 591px; }
+  label { display: block; color: var(--hijau-tua); font-size: 20px; font-weight: 600; line-height: 28px; margin-bottom: 0; }
+  input {
+    display: block; width: 591px; height: 73px; padding: 0 15px; border: none; border-radius: 8px;
+    background: var(--putih); color: var(--hijau-tua); font-size: 20px; font-weight: 500; margin: 0 0 17px;
+  }
+  input::placeholder { color: var(--tosca); }
+  input:focus { outline: 2px solid var(--tosca); }
+
+  .tombol { display: flex; gap: 29px; margin: 80px 0 40px 44px; }
+  .tombol button {
+    width: 231px; height: 50px; border: none; border-radius: 8px;
+    font-size: 20px; font-weight: 600; cursor: pointer; transition: background 200ms ease-out;
+  }
+  .batal { background: var(--putih); color: var(--tosca); }
+  .simpan { background: var(--tosca); color: var(--putih); }
+  .simpan:hover { background: var(--hijau-tua); }
+  .batal:hover { background: #cfeee9; }
+
+  #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+  #popup { background: var(--bg); color: var(--hijau-tua); width: 436px; height: 315px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; cursor: pointer; }
+  .ikon { width: 90px; height: 90px; border-radius: 50%; background: var(--hijau-tua); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+  #pesan { font-size: 24px; font-weight: 600; margin: 0; color: var(--hijau-tua); }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Pharmora">
+  <a href="menupasien.html" class="kembali">← Kembali</a>
+</header>
+
+<main>
+  <h1 id="judul">Tambah Pasien</h1>
+  <form id="formPasien" autocomplete="off">
+    <label for="nama">Nama Pasien</label>
+    <input id="nama" placeholder="Masukan nama pasien">
+
+    <label for="tgl">Tanggal Lahir</label>
+    <input id="tgl" placeholder="yyyy/mm/dd">
+
+    <label for="jk">Jenis Kelamin</label>
+    <input id="jk" placeholder="Contoh : P/L">
+
+    <label for="alamat">Alamat</label>
+    <input id="alamat" placeholder="Contoh : Jakarta">
+
+    <label for="hp">No HP</label>
+    <input id="hp" placeholder="Contoh : 081123456">
+
+    <div class="tombol">
+      <button type="button" class="batal" onclick="document.getElementById('formPasien').reset(); location.href='menupasien.html'">Batal</button>
+      <button type="button" class="simpan" onclick="simpan()">Simpan</button>
+    </div>
+  </form>
+</main>
+
+<div id="overlay" onclick="tutupPopup()">
+  <div id="popup">
+    <div class="ikon" id="ikon"></div>
+    <p id="pesan"></p>
+  </div>
+</div>
+
+<script>
+const IKON_CENTANG = `<svg width="50" height="50" viewBox="0 0 48 48" fill="none"><path d="M8 25 L19 36 L40 13" stroke="#FFFFFF" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"/></svg>`;
+const IKON_SILANG = `<svg width="50" height="50" viewBox="0 0 48 48" fill="none"><path d="M10 10 L38 38 M38 10 L10 38" stroke="#FFFFFF" stroke-width="7" stroke-linecap="square"/></svg>`;
+
+const API = "http://localhost:8081/api/pasien";
+const idEdit = new URLSearchParams(location.search).get("id");
+
+async function simpan() {
+  const data = {
+    nama: document.getElementById("nama").value.trim(),
+    tglLahir: document.getElementById("tgl").value.trim(),
+    jenisKelamin: document.getElementById("jk").value.trim(),
+    alamat: document.getElementById("alamat").value.trim(),
+    hp: document.getElementById("hp").value.trim()
+  };
+
+  if (!data.nama || !data.tglLahir || !data.jenisKelamin || !data.alamat || !data.hp) {
+    tampilPopup("Lengkapi Data Terlebih Dahulu", false);
+    return;
+  }
+
+  const url = API + (idEdit ? "/" + encodeURIComponent(idEdit) : "");
+
+  try {
+    const res = await fetch(url, {
+      method: idEdit ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    const hasil = await res.json();
+
+    if (res.ok) {
+      tampilPopup(idEdit ? "Data berhasil Diubah" : "Data berhasil Ditambahkan", true);
+      document.getElementById("formPasien").reset();
+      setTimeout(() => {
+        if (!idEdit) sessionStorage.setItem("halamanPasien", "9999");
+        location.href = "menupasien.html";
+      }, 3000);
+    } else {
+      tampilPopup(hasil.pesan, false);
+    }
+  } catch (e) {
+    tampilPopup("Tidak dapat terhubung ke server", false);
+  }
+}
+
+/* Mode edit */
+async function muatData() {
+  if (!idEdit) return;
+  document.getElementById("judul").textContent = "Edit Pasien";
+  try {
+    const res = await fetch(API + "/" + encodeURIComponent(idEdit));
+    if (!res.ok) throw new Error();
+    const p = await res.json();
+    document.getElementById("nama").value = p.NamaPasien;
+    document.getElementById("tgl").value = String(p.TglLahir).replaceAll("-", "/");
+    document.getElementById("jk").value = p.JenisKelamin;
+    document.getElementById("alamat").value = p.Alamat;
+    document.getElementById("hp").value = p.NoHP;
+  } catch (e) {
+    tampilPopup("Data pasien tidak ditemukan", false);
+  }
+}
+muatData();
+
+function tampilPopup(teks, sukses) {
+  document.getElementById("ikon").innerHTML = sukses ? IKON_CENTANG : IKON_SILANG;
+  document.getElementById("pesan").innerText = teks;
+  document.getElementById("overlay").style.display = "flex";
+}
+
+function tutupPopup() {
+  document.getElementById("overlay").style.display = "none";
+}
+</script>
+</body>
+</html>
