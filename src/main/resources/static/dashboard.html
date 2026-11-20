@@ -5,13 +5,14 @@
 <title>Dashboard - Pharmora</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="sidebar.css">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
 <style>
   :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; --oranye: #F26A1B; }
   * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
   html, body { margin: 0; background: var(--bg); }
   body { zoom: 0.75; overflow-x: hidden; }
   .layout { display: flex; height: calc(100vh / 0.75); min-height: 900px; }
-
 
   .konten { flex: 1; padding: 35px 40px 50px 27px; min-width: 0; }
 
@@ -30,7 +31,6 @@
 
   .sapaan { margin: 30px 0 0 0; font-size: 36px; font-weight: 600; color: #000; }
 
-  /* 4 kotak melebar sampai tepi kanan */
   .kartu-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 33px; margin: 60px 0 0 0; }
   .stat {
     height: 143px; background: var(--putih); border: 3px solid #000; border-radius: 22px;
@@ -43,10 +43,8 @@
   .stat.oranye .judul, .stat.oranye .ket { color: var(--oranye); }
   .stat .baris { display: flex; align-items: center; gap: 8px; margin: 14px 0 10px 12px; }
   .stat .angka { font-size: 28px; font-weight: 600; color: #000; }
-  .stat .pil { width: 22px; height: 30px; flex-shrink: 0; }
   .stat .ket { font-size: 11px; font-weight: 600; color: var(--tosca); }
 
-  /* Tabel persegi, selebar konten */
   .panel { background: var(--putih); border-radius: 0; margin: 62px 0 0 0; padding: 34px 22px 40px; width: 100%; }
   table { width: 100%; border-collapse: collapse; }
   th { background: var(--bg); color: var(--hijau-tua); font-size: 20px; font-weight: 600; text-align: left; height: 51px; padding: 0 10px; border-bottom: 2px solid #777; }
@@ -54,6 +52,7 @@
   tbody tr { transition: background 200ms ease-out; }
   tbody tr:hover { background: #f1fbf9; }
   .habis { color: #c0392b; }
+  .mau { color: var(--oranye); }
   .kosong { text-align: center; }
 
   #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 10; }
@@ -87,28 +86,26 @@
         <div class="ket">+ 1 bulan lalu</div>
       </div>
 
-      <div class="stat oranye" id="k-menipis" onclick="pilih('menipis')">
+            <div class="stat oranye" id="k-menipis" onclick="pilih('menipis')">
         <div class="judul">Stok menipis</div>
         <div class="baris">
-          <svg class="pil" viewBox="0 0 26 34"><rect x="2" y="2" width="14" height="30" rx="7" fill="#F26A1B" transform="rotate(20 9 17)"/><circle cx="7" cy="28" r="5" fill="#E8470F"/></svg>
           <div class="angka" id="n-menipis">0</div>
-        </div>
-        <div class="ket">Perlu Perhatian</div>
-      </div>
-
-      <div class="stat oranye" id="k-habis" onclick="pilih('habis')">
-        <div class="judul">Stok menipis</div>
-        <div class="baris">
-          <svg class="pil" viewBox="0 0 26 34"><rect x="2" y="2" width="14" height="30" rx="7" fill="#F26A1B" transform="rotate(20 9 17)"/><circle cx="7" cy="28" r="5" fill="#E8470F"/></svg>
-          <div class="angka" id="n-habis">0</div>
         </div>
         <div class="ket">Perlu Restok</div>
       </div>
 
-      <div class="stat" id="k-transaksi" onclick="tampilPopup('Halaman Transaksi belum tersedia')">
-        <div class="judul">Transaksi Hari Ini</div>
-        <div class="baris"><div class="angka">12</div></div>
-        <div class="ket">+ 1 minggu lalu</div>
+      <div class="stat oranye" id="k-kedaluwarsa" onclick="pilih('kedaluwarsa')">
+        <div class="judul">Mau kedaluwarsa</div>
+        <div class="baris">
+          <div class="angka" id="n-kedaluwarsa">0</div>
+        </div>
+        <div class="ket">Perlu Dicek</div>
+      </div>
+
+      <div class="stat" id="k-resep" onclick="location.href='menuresep.html'">
+        <div class="judul">Total Resep</div>
+        <div class="baris"><div class="angka" id="n-resep">0</div></div>
+        <div class="ket" id="ket-resep">Memuat...</div>
       </div>
     </div>
 
@@ -141,42 +138,81 @@
 
 <script src="sidebar.js"></script>
 <script>
-/* ===== SUMBER DATA =====
-   Sekarang data statis dari tabel obat.
-   Nanti untuk database: ganti isi ambilObat() dengan
-   fetch("http://localhost:8081/api/obat") lalu return hasilnya
-   dalam bentuk [nama, idKategori, stok, keterangan]. */
 const NAMA_KATEGORI = { KT001: "Analgestik", KT002: "Antibiotik", KT003: "Vitamin" };
-const BATAS_MENIPIS = 30;
+const BATAS_MENIPIS = 30;   // stok sampai angka ini dianggap menipis
+const BATAS_HARI = 90;      // sisa hari sampai angka ini dianggap mau kedaluwarsa
 let OBAT = [];
+let RESEP = [];
 
+/* Format tiap obat: [nama, idKategori, stok, keterangan, tglKedaluwarsa]
+   Data contoh di bawah. Untuk database, ganti isinya dengan:
+
+   const res = await fetch("http://localhost:8081/api/obat");
+   const data = await res.json();
+   return data.map(o => [o.NamaObat, o.IdKategori, o.Stok, o.Keterangan, o.TglKedaluwarsa]);
+*/
 async function ambilObat() {
   return [
-    ["Biogesic",        "KT001", 45, "Obat bebas"],
-    ["Cefadroxil",      "KT002", 30, "Resep dokter"],
-    ["Sangobion",       "KT003", 40, "Suplemen"],
-    ["Vitamin C 400mg", "KT003", 43, "Suplemen"],
-    ["Cefixime 100mg",  "KT002", 42, "Resep dokter"]
+    ["Biogesic",        "KT001", 45, "Obat bebas",   "2027-08-15"],
+    ["Cefadroxil",      "KT002", 30, "Resep dokter", "2027-01-10"],
+    ["Sangobion",       "KT003", 40, "Suplemen",     "2026-12-20"],
+    ["Vitamin C 400mg", "KT003", 43, "Suplemen",     "2028-03-01"],
+    ["Cefixime 100mg",  "KT002", 42, "Resep dokter", "2026-11-05"]
   ];
 }
 
-const menipis = o => o[2] > 0 && o[2] <= BATAS_MENIPIS;
-const habis   = o => o[2] === 0;
+async function ambilResep() {
+  try {
+    const res = await fetch("http://localhost:8081/api/resep");
+    return await res.json();
+  } catch (e) {
+    return [];
+  }
+}
+
+function sisaHari(o) {
+  if (!o[4]) return null;
+  const sekarang = new Date();
+  sekarang.setHours(0, 0, 0, 0);
+  const tgl = new Date(o[4] + "T00:00:00");
+  return Math.round((tgl - sekarang) / 86400000);
+}
+
+const habis      = o => o[2] === 0;
+const menipis    = o => o[2] <= BATAS_MENIPIS;
+const hampir     = o => { const s = sisaHari(o); return s !== null && s <= BATAS_HARI; };
+const sudahLewat = o => { const s = sisaHari(o); return s !== null && s < 0; };
+
+function statusObat(o) {
+  if (habis(o)) return ["Habis", "habis"];
+  if (sudahLewat(o)) return ["Kedaluwarsa", "habis"];
+  if (hampir(o)) return ["Mau kedaluwarsa", "mau"];
+  return ["Tersedia", ""];
+}
+
 let filter = "semua";
 
 function hitungKartu() {
-  document.getElementById("n-semua").textContent   = OBAT.length;
-  document.getElementById("n-menipis").textContent = OBAT.filter(menipis).length;
-  document.getElementById("n-habis").textContent   = OBAT.filter(habis).length;
+  const belum = RESEP.filter(r => (r.Status || "").toLowerCase() === "belum").length;
+  const lewat = OBAT.filter(sudahLewat).length;
+  const segera = OBAT.filter(hampir).length - lewat;
+
+  document.getElementById("n-semua").textContent        = OBAT.length;
+  document.getElementById("n-menipis").textContent      = OBAT.filter(menipis).length;
+  document.getElementById("n-kedaluwarsa").textContent  = OBAT.filter(hampir).length;
+  document.getElementById("n-resep").textContent        = RESEP.length;
+  document.getElementById("ket-resep").textContent      = belum + " belum selesai";
+
   document.getElementById("notif").innerHTML = `
-    <div><b>${OBAT.filter(menipis).length} obat</b> stok menipis, perlu perhatian</div>
-    <div><b>${OBAT.filter(habis).length} obat</b> perlu restok</div>
-    <div>12 transaksi hari ini</div>`;
+    <div><b>${OBAT.filter(menipis).length} obat</b> stok menipis, perlu restok</div>
+    <div><b>${lewat} obat</b> sudah kedaluwarsa</div>
+    <div><b>${segera} obat</b> akan kedaluwarsa dalam ${BATAS_HARI} hari</div>
+    <div><b>${belum} resep</b> belum selesai</div>`;
 }
 
 function pilih(jenis) {
   filter = (filter === jenis && jenis !== "semua") ? "semua" : jenis;
-  ["semua", "menipis", "habis"].forEach(j =>
+  ["semua", "menipis", "kedaluwarsa"].forEach(j =>
     document.getElementById("k-" + j).classList.toggle("aktif", filter === j && filter !== "semua"));
   tampil();
 }
@@ -185,7 +221,7 @@ function tampil() {
   const kata = document.getElementById("cari").value.trim().toLowerCase();
   const hasil = OBAT.filter(o => {
     const cocokNama = o[0].toLowerCase().includes(kata);
-    const cocokFilter = filter === "semua" ? true : filter === "habis" ? habis(o) : menipis(o);
+    const cocokFilter = filter === "semua" ? true : filter === "menipis" ? menipis(o) : hampir(o);
     return cocokNama && cocokFilter;
   });
   const tbody = document.getElementById("isi");
@@ -193,15 +229,18 @@ function tampil() {
     tbody.innerHTML = '<tr><td colspan="6" class="kosong">Data tidak ditemukan</td></tr>';
     return;
   }
-  tbody.innerHTML = hasil.map((o, i) => `
+  tbody.innerHTML = hasil.map((o, i) => {
+    const st = statusObat(o);
+    return `
     <tr>
       <td>${i + 1}</td>
       <td>${o[0]}</td>
       <td>${NAMA_KATEGORI[o[1]] || o[1]}</td>
       <td>${o[2]}</td>
-      <td class="${habis(o) ? 'habis' : ''}">${habis(o) ? 'Habis' : 'Tersedia'}</td>
+      <td class="${st[1]}">${st[0]}</td>
       <td>${o[3]}</td>
-    </tr>`).join("");
+    </tr>`;
+  }).join("");
 }
 
 function toggleNotif() { document.getElementById("notif").classList.toggle("buka"); }
@@ -219,6 +258,7 @@ function tutupPopup() { document.getElementById("overlay").style.display = "none
 
 (async function () {
   OBAT = await ambilObat();
+  RESEP = await ambilResep();
   hitungKartu();
   tampil();
 })();

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Tambah Obat - Pharmora</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; }
+  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  body { margin: 0; background: var(--bg); min-height: 100vh; zoom: 0.75; }
+
+  header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px 0; }
+  header img { width: 223px; height: 68px; display: block; }
+  .kembali { color: var(--tosca); font-weight: 500; font-size: 20px; text-decoration: none; transition: color 200ms ease-out; }
+  .kembali:hover { color: var(--hijau-tua); }
+
+  main { padding: 0 44px; }
+  h1 { color: var(--hijau-tua); font-size: 32px; font-weight: 600; margin: 20px 0 30px; }
+
+  .kolom { display: flex; justify-content: space-between; gap: 60px; padding: 0 22px; }
+  .kiri { width: 591px; flex-shrink: 0; }
+  .kanan { flex: 1; min-width: 0; }
+
+  label { display: block; color: var(--hijau-tua); font-size: 20px; font-weight: 600; line-height: 28px; margin-bottom: 14px; }
+  input, textarea {
+    display: block; width: 100%; height: 73px; padding: 0 15px; border: none; border-radius: 8px;
+    background: var(--putih); color: var(--hijau-tua); font-size: 20px; font-weight: 500; margin: 0 0 20px;
+  }
+  textarea { height: 237px; padding: 12px 10px; resize: none; font-family: 'Poppins', sans-serif; }
+  input::placeholder, textarea::placeholder { color: #20BFA9 !important; opacity: 1; }
+  input:focus, textarea:focus { outline: 2px solid var(--tosca); }
+
+  /* Dropdown kategori (bisa di-scroll) */
+  .dropdown { position: relative; width: 100%; margin: 0 0 20px; }
+  .dropdown-kotak { height: 73px; padding: 0 20px 0 12px; background: var(--putih); border-radius: 8px;
+                    display: flex; align-items: center; justify-content: space-between;
+                    color: var(--tosca); font-size: 20px; font-weight: 600; cursor: pointer; user-select: none; }
+  .dropdown.terpilih .dropdown-kotak { color: var(--hijau-tua); }
+  .dropdown.buka .dropdown-kotak { border-radius: 8px 8px 0 0; }
+  .dropdown-panah { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 7px solid var(--hijau-tua); }
+  .dropdown-daftar { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--putih);
+                     z-index: 5; max-height: 220px; overflow-y: auto; border-radius: 0 0 8px 8px; box-shadow: 0 6px 14px rgba(0,0,0,0.12); }
+  .dropdown.buka .dropdown-daftar { display: block; }
+  .pilihan { height: 55px; padding: 0 12px; display: flex; align-items: center; color: var(--hijau-tua);
+             font-size: 19px; font-weight: 600; cursor: pointer; transition: background 200ms ease-out; flex-shrink: 0; }
+  .pilihan:hover { background: #e6f8f5; }
+  .dropdown-daftar::-webkit-scrollbar { width: 8px; }
+  .dropdown-daftar::-webkit-scrollbar-thumb { background: #b9e6df; border-radius: 4px; }
+
+  .tombol { display: flex; gap: 29px; justify-content: flex-end; margin: 40px 0 40px; padding: 0 22px; }
+  .tombol button { width: 231px; height: 50px; border: none; border-radius: 8px; font-size: 20px; font-weight: 600;
+                   cursor: pointer; transition: background 200ms ease-out; }
+  .batal { background: var(--putih); color: var(--tosca); }
+  .simpan { background: var(--tosca); color: var(--putih); }
+  .simpan:hover { background: var(--hijau-tua); }
+  .batal:hover { background: #cfeee9; }
+
+  #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 10; }
+  #popup { background: var(--bg); color: var(--hijau-tua); width: 436px; height: 315px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; cursor: pointer; }
+  .ikon { width: 90px; height: 90px; border-radius: 50%; background: var(--hijau-tua); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+  #pesan { font-size: 24px; font-weight: 600; margin: 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Pharmora">
+  <a href="menuobat.html" class="kembali">← Kembali</a>
+</header>
+
+<main>
+  <h1 id="judul">Tambah Obat</h1>
+  <form id="formObat" autocomplete="off" onsubmit="return false">
+    <div class="kolom">
+      <div class="kiri">
+        <label for="nama">Nama Obat</label>
+        <input id="nama" placeholder="Masukan nama obat">
+
+        <label for="stok">Stok</label>
+        <input id="stok" placeholder="Contoh : 10">
+
+        <label for="masuk">Tanggal Obat Masuk</label>
+        <input id="masuk" placeholder="dd/mm/yyyy">
+
+        <label for="keluar">Tanggal Obat Keluar</label>
+        <input id="keluar" placeholder="dd/mm/yyyy">
+      </div>
+
+      <div class="kanan">
+        <label>kategori</label>
+        <div class="dropdown" id="dropKategori">
+          <div class="dropdown-kotak" id="dropKotak">
+            <span id="dropTeks">Kategori</span>
+            <i class="dropdown-panah"></i>
+          </div>
+          <div class="dropdown-daftar" id="dropDaftar"></div>
+        </div>
+
+        <label for="exp">Tanggal Obat Kadaluwarsa</label>
+        <input id="exp" placeholder="dd/mm/yyyy">
+
+        <label for="deskripsi">Deskripsi Obat</label>
+        <textarea id="deskripsi" placeholder="Masukan deskripsi obat"></textarea>
+      </div>
+    </div>
+
+    <div class="tombol">
+      <button type="button" class="batal" onclick="location.href='menuobat.html'">Batal</button>
+      <button type="button" class="simpan" onclick="simpan()">Simpan</button>
+    </div>
+  </form>
+</main>
+
+<div id="overlay" onclick="tutupPopup()">
+  <div id="popup">
+    <div class="ikon" id="ikon"></div>
+    <p id="pesan"></p>
+  </div>
+</div>
+
+<script>
+const API = "http://localhost:8081/api/obat";
+const idEdit = new URLSearchParams(location.search).get("id");
+
+const IKON_CENTANG = `<svg width="50" height="50" viewBox="0 0 48 48" fill="none"><path d="M8 25 L19 36 L40 13" stroke="#FFFFFF" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"/></svg>`;
+const IKON_SILANG = `<svg width="50" height="50" viewBox="0 0 48 48" fill="none"><path d="M10 10 L38 38 M38 10 L10 38" stroke="#FFFFFF" stroke-width="7" stroke-linecap="square"/></svg>`;
+
+/* ===== Dropdown kategori ===== */
+let kategoriDipilih = "";
+const dropdown = document.getElementById("dropKategori");
+const dropTeks = document.getElementById("dropTeks");
+
+document.getElementById("dropKotak").addEventListener("click", e => {
+  e.stopPropagation();
+  dropdown.classList.toggle("buka");
+});
+document.addEventListener("click", () => dropdown.classList.remove("buka"));
+
+function pilihKategori(id, nama) {
+  kategoriDipilih = id;
+  dropTeks.textContent = nama;
+  dropdown.classList.add("terpilih");
+  dropdown.classList.remove("buka");
+}
+
+async function muatKategori() {
+  const daftar = document.getElementById("dropDaftar");
+  try {
+    const data = await (await fetch(API + "/kategori")).json();
+    daftar.innerHTML = "";
+    data.forEach(k => {
+      const el = document.createElement("div");
+      el.className = "pilihan";
+      el.textContent = k.NamaKategori;
+      el.addEventListener("click", e => { e.stopPropagation(); pilihKategori(k.IdKategori, k.NamaKategori); });
+      daftar.appendChild(el);
+    });
+  } catch (e) {
+    daftar.innerHTML = '<div class="pilihan">Gagal memuat kategori</div>';
+  }
+}
+
+/* ===== Simpan ===== */
+async function simpan() {
+  const data = {
+    nama: document.getElementById("nama").value.trim(),
+    idKategori: kategoriDipilih,
+    stok: document.getElementById("stok").value.trim(),
+    tglMasuk: document.getElementById("masuk").value.trim(),
+    tglKeluar: document.getElementById("keluar").value.trim(),
+    tglExpired: document.getElementById("exp").value.trim(),
+    deskripsi: document.getElementById("deskripsi").value.trim()
+  };
+
+  if (!data.nama || !data.idKategori || !data.stok || !data.tglMasuk || !data.tglExpired || !data.deskripsi) {
+    tampilPopup("Lengkapi Data Terlebih Dahulu", false);
+    return;
+  }
+
+  const url = API + (idEdit ? "/" + encodeURIComponent(idEdit) : "");
+  try {
+    const res = await fetch(url, {
+      method: idEdit ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    const hasil = await res.json();
+    if (res.ok) {
+      tampilPopup(idEdit ? "Data berhasil Diubah" : "Data berhasil Ditambahkan", true);
+      setTimeout(() => {
+        if (!idEdit) sessionStorage.setItem("halamanObat", "9999");
+        location.href = "menuobat.html";
+      }, 3000);
+    } else {
+      tampilPopup(hasil.pesan, false);
+    }
+  } catch (e) {
+    tampilPopup("Tidak dapat terhubung ke server", false);
+  }
+}
+
+/* ===== Mode edit ===== */
+async function muatData() {
+  if (!idEdit) return;
+  document.getElementById("judul").textContent = "Edit Obat";
+  try {
+    const res = await fetch(API + "/" + encodeURIComponent(idEdit));
+    if (!res.ok) throw new Error();
+    const o = await res.json();
+    document.getElementById("nama").value = o.NamaObat;
+    document.getElementById("stok").value = o.Stok;
+    document.getElementById("masuk").value = o.TglMasuk || "";
+    document.getElementById("keluar").value = o.TglKeluar || "";
+    document.getElementById("exp").value = o.TglExpired || "";
+    document.getElementById("deskripsi").value = o.Deskripsi || "";
+    pilihKategori(o.IdKategori, o.NamaKategori);
+  } catch (e) {
+    tampilPopup("Data obat tidak ditemukan", false);
+  }
+}
+
+function tampilPopup(teks, sukses) {
+  document.getElementById("ikon").innerHTML = sukses ? IKON_CENTANG : IKON_SILANG;
+  document.getElementById("pesan").innerText = teks;
+  document.getElementById("overlay").style.display = "flex";
+}
+function tutupPopup() { document.getElementById("overlay").style.display = "none"; }
+
+muatKategori().then(muatData);
+</script>
+</body>
+</html>
