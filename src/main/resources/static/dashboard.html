@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard - Pharmora</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sidebar.css">
+<style>
+  :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; --oranye: #F26A1B; }
+  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  html, body { margin: 0; background: var(--bg); }
+  body { zoom: 0.75; overflow-x: hidden; }
+  .layout { display: flex; min-height: calc(100vh / 0.75); }
+  .sidebar { width: 349px; flex-shrink: 0; height: auto; min-height: 1024px; }
+
+  .konten { flex: 1; padding: 35px 40px 50px 27px; min-width: 0; }
+
+  .bar { position: relative; width: 760px; max-width: 100%; height: 34px; background: var(--putih); border-radius: 8px;
+         display: flex; align-items: center; padding: 0 12px; gap: 10px; }
+  .bar input { flex: 1; border: none; outline: none; font-size: 14px; color: #333; background: transparent; }
+  .bar input::placeholder { color: #888; }
+  .lonceng { cursor: pointer; border-radius: 6px; padding: 3px; display: flex; transition: background 200ms ease-out; }
+  .lonceng:hover { background: #d8f3ee; }
+  .notif { display: none; position: absolute; top: 42px; right: 0; width: 330px; background: var(--putih);
+           border-radius: 10px; box-shadow: 0 6px 20px rgba(0,0,0,0.15); z-index: 5; overflow: hidden; }
+  .notif.buka { display: block; }
+  .notif div { padding: 12px 16px; font-size: 14px; font-weight: 500; color: var(--hijau-tua); border-bottom: 1px solid #e3f1ee; }
+  .notif div:last-child { border-bottom: none; }
+  .notif b { color: var(--oranye); }
+
+  .sapaan { margin: 30px 0 0 0; font-size: 36px; font-weight: 600; color: #000; }
+
+  /* 4 kotak melebar sampai tepi kanan */
+  .kartu-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 33px; margin: 60px 0 0 0; }
+  .stat {
+    height: 143px; background: var(--putih); border: 3px solid #000; border-radius: 22px;
+    padding: 20px 22px; cursor: pointer;
+    transition: border-color 200ms ease-out, background 200ms ease-out;
+  }
+  .stat:hover { background: #f1fbf9; border-color: var(--hijau-tua); }
+  .stat.aktif { border-color: var(--tosca); background: #f1fbf9; }
+  .stat .judul { font-size: 12px; font-weight: 600; color: var(--tosca); }
+  .stat.oranye .judul, .stat.oranye .ket { color: var(--oranye); }
+  .stat .baris { display: flex; align-items: center; gap: 8px; margin: 14px 0 10px 12px; }
+  .stat .angka { font-size: 28px; font-weight: 600; color: #000; }
+  .stat .pil { width: 22px; height: 30px; flex-shrink: 0; }
+  .stat .ket { font-size: 11px; font-weight: 600; color: var(--tosca); }
+
+  /* Tabel persegi, selebar konten */
+  .panel { background: var(--putih); border-radius: 0; margin: 62px 0 0 0; padding: 34px 22px 40px; width: 100%; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--bg); color: var(--hijau-tua); font-size: 20px; font-weight: 600; text-align: left; height: 51px; padding: 0 10px; border-bottom: 2px solid #777; }
+  td { color: var(--hijau-tua); font-size: 20px; font-weight: 600; height: 51px; padding: 0 10px; border-bottom: 1px solid #777; }
+  tbody tr { transition: background 200ms ease-out; }
+  tbody tr:hover { background: #f1fbf9; }
+  .habis { color: #c0392b; }
+  .kosong { text-align: center; }
+
+  #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 10; }
+  #popup { background: var(--bg); color: var(--hijau-tua); width: 436px; height: 315px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; cursor: pointer; }
+  .ikon { width: 90px; height: 90px; border-radius: 50%; background: var(--hijau-tua); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+  #pesan { font-size: 24px; font-weight: 600; margin: 0; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="konten">
+    <div class="bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round">
+        <circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/>
+      </svg>
+      <input id="cari" placeholder="Pencarian...." oninput="tampil()">
+      <div class="lonceng" onclick="toggleNotif()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#000"><path d="M12 22a2.5 2.5 0 0 0 2.4-2h-4.8A2.5 2.5 0 0 0 12 22zm7-6V11a7 7 0 0 0-5-6.7V3a2 2 0 0 0-4 0v1.3A7 7 0 0 0 5 11v5l-2 2v1h18v-1z"/></svg>
+      </div>
+      <div class="notif" id="notif"></div>
+    </div>
+
+    <div class="sapaan">Selamat Datang, Haechan Lee</div>
+
+    <div class="kartu-row">
+      <div class="stat" id="k-semua" onclick="pilih('semua')">
+        <div class="judul">Total Obat</div>
+        <div class="baris"><div class="angka" id="n-semua">0</div></div>
+        <div class="ket">+ 1 bulan lalu</div>
+      </div>
+
+      <div class="stat oranye" id="k-menipis" onclick="pilih('menipis')">
+        <div class="judul">Stok menipis</div>
+        <div class="baris">
+          <svg class="pil" viewBox="0 0 26 34"><rect x="2" y="2" width="14" height="30" rx="7" fill="#F26A1B" transform="rotate(20 9 17)"/><circle cx="7" cy="28" r="5" fill="#E8470F"/></svg>
+          <div class="angka" id="n-menipis">0</div>
+        </div>
+        <div class="ket">Perlu Perhatian</div>
+      </div>
+
+      <div class="stat oranye" id="k-habis" onclick="pilih('habis')">
+        <div class="judul">Stok menipis</div>
+        <div class="baris">
+          <svg class="pil" viewBox="0 0 26 34"><rect x="2" y="2" width="14" height="30" rx="7" fill="#F26A1B" transform="rotate(20 9 17)"/><circle cx="7" cy="28" r="5" fill="#E8470F"/></svg>
+          <div class="angka" id="n-habis">0</div>
+        </div>
+        <div class="ket">Perlu Restok</div>
+      </div>
+
+      <div class="stat" id="k-transaksi" onclick="tampilPopup('Halaman Transaksi belum tersedia')">
+        <div class="judul">Transaksi Hari Ini</div>
+        <div class="baris"><div class="angka">12</div></div>
+        <div class="ket">+ 1 minggu lalu</div>
+      </div>
+    </div>
+
+    <section class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:7%">NO</th>
+            <th style="width:29%">Nama Obat</th>
+            <th style="width:18%">Kategori</th>
+            <th style="width:11%">Stok</th>
+            <th style="width:17%">Status</th>
+            <th style="width:18%">Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="isi"></tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<div id="overlay" onclick="tutupPopup()">
+  <div id="popup">
+    <div class="ikon">
+      <svg width="50" height="50" viewBox="0 0 48 48" fill="none"><path d="M10 10 L38 38 M38 10 L10 38" stroke="#FFFFFF" stroke-width="7" stroke-linecap="square"/></svg>
+    </div>
+    <p id="pesan"></p>
+  </div>
+</div>
+
+<script src="sidebar.js"></script>
+<script>
+/* ===== SUMBER DATA =====
+   Sekarang data statis dari tabel obat.
+   Nanti untuk database: ganti isi ambilObat() dengan
+   fetch("http://localhost:8081/api/obat") lalu return hasilnya
+   dalam bentuk [nama, idKategori, stok, keterangan]. */
+const NAMA_KATEGORI = { KT001: "Analgestik", KT002: "Antibiotik", KT003: "Vitamin" };
+const BATAS_MENIPIS = 30;
+let OBAT = [];
+
+async function ambilObat() {
+  return [
+    ["Biogesic",        "KT001", 45, "Obat bebas"],
+    ["Cefadroxil",      "KT002", 30, "Resep dokter"],
+    ["Sangobion",       "KT003", 40, "Suplemen"],
+    ["Vitamin C 400mg", "KT003", 43, "Suplemen"],
+    ["Cefixime 100mg",  "KT002", 42, "Resep dokter"]
+  ];
+}
+
+const menipis = o => o[2] > 0 && o[2] <= BATAS_MENIPIS;
+const habis   = o => o[2] === 0;
+let filter = "semua";
+
+function hitungKartu() {
+  document.getElementById("n-semua").textContent   = OBAT.length;
+  document.getElementById("n-menipis").textContent = OBAT.filter(menipis).length;
+  document.getElementById("n-habis").textContent   = OBAT.filter(habis).length;
+  document.getElementById("notif").innerHTML = `
+    <div><b>${OBAT.filter(menipis).length} obat</b> stok menipis, perlu perhatian</div>
+    <div><b>${OBAT.filter(habis).length} obat</b> perlu restok</div>
+    <div>12 transaksi hari ini</div>`;
+}
+
+function pilih(jenis) {
+  filter = (filter === jenis && jenis !== "semua") ? "semua" : jenis;
+  ["semua", "menipis", "habis"].forEach(j =>
+    document.getElementById("k-" + j).classList.toggle("aktif", filter === j && filter !== "semua"));
+  tampil();
+}
+
+function tampil() {
+  const kata = document.getElementById("cari").value.trim().toLowerCase();
+  const hasil = OBAT.filter(o => {
+    const cocokNama = o[0].toLowerCase().includes(kata);
+    const cocokFilter = filter === "semua" ? true : filter === "habis" ? habis(o) : menipis(o);
+    return cocokNama && cocokFilter;
+  });
+  const tbody = document.getElementById("isi");
+  if (hasil.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="kosong">Data tidak ditemukan</td></tr>';
+    return;
+  }
+  tbody.innerHTML = hasil.map((o, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${o[0]}</td>
+      <td>${NAMA_KATEGORI[o[1]] || o[1]}</td>
+      <td>${o[2]}</td>
+      <td class="${habis(o) ? 'habis' : ''}">${habis(o) ? 'Habis' : 'Tersedia'}</td>
+      <td>${o[3]}</td>
+    </tr>`).join("");
+}
+
+function toggleNotif() { document.getElementById("notif").classList.toggle("buka"); }
+document.addEventListener("click", e => {
+  if (!e.target.closest(".lonceng") && !e.target.closest(".notif")) {
+    document.getElementById("notif").classList.remove("buka");
+  }
+});
+
+function tampilPopup(teks) {
+  document.getElementById("pesan").innerText = teks;
+  document.getElementById("overlay").style.display = "flex";
+}
+function tutupPopup() { document.getElementById("overlay").style.display = "none"; }
+
+(async function () {
+  OBAT = await ambilObat();
+  hitungKartu();
+  tampil();
+})();
+</script>
+</body>
+</html>

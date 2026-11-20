@@ -5,6 +5,7 @@
 .logo-kotak img.putihkan { filter: brightness(0) invert(1); }
 
 .sidebar nav { margin: 36px 0 0 40px; width: 269px; display: flex; flex-direction: column; gap: 6px; }
+
 .sidebar nav a {
   display: flex; align-items: center; gap: 16px;
   height: 53px; padding: 0 0 0 20px;
@@ -17,8 +18,50 @@
 .sidebar nav a.aktif:hover { background: #20BFA9; }
 
 .sidebar nav svg {
-.sidebar nav svg.isi { fill: #fff; stroke: none; }
   width: 24px; height: 24px; flex-shrink: 0;
-  fill: none; stroke: #fff; stroke-width: 2;
-  stroke-linecap: round; stroke-linejoin: round;
+  overflow: visible;
+}
+
+/* ===== Kotak akun (dikunci ke bawah sidebar) ===== */
+.akun { position: absolute; left: 55px; bottom: 90px; width: 240px; }
+
+.akun-kotak {
+  width: 240px; height: 60px; background: #E6F8F5; border-radius: 10px;
+  display: flex; align-items: center; gap: 12px; padding: 0 16px 0 9px;
+  box-sizing: border-box;
+  cursor: pointer; transition: background 200ms ease-out;
+}
+.akun-kotak svg { width: 32px; height: 32px; flex-shrink: 0; }
+
+.akun-info { flex: 1; min-width: 0; }
+.akun-nama { color: #006B63; font-size: 19px; font-weight: 600; line-height: 22px; white-space: nowrap; }
+.akun-peran { color: #20BFA9; font-size: 13px; font-weight: 500; line-height: 16px; margin-top: 4px; transition: color 200ms ease-out; }
+
+/* panah bawah di kotak (tidak berputar) */
+.panah {
+  width: 0; height: 0; flex-shrink: 0;
+  border-left: 7px solid transparent; border-right: 7px solid transparent;
+  border-top: 8px solid #008F83;
+}
+
+/* panel "Keluar" di bawah kotak */
+.akun-menu {
+  position: absolute; top: calc(100% + 5px); left: 0;
+  width: 240px; height: 52px; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px 0 16px;
+  background: #E6F8F5; color: #006B63;
+  font-size: 19px; font-weight: 600; text-decoration: none;
+  opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: opacity 300ms ease-out, transform 300ms ease-out, visibility 300ms, background 200ms ease-out;
+}
+.akun.buka .akun-menu { opacity: 1; visibility: visible; transform: none; }
+
+
+/* panah atas di panel */
+.panah-atas {
+  width: 0; height: 0;
+  border-left: 7px solid transparent; border-right: 7px solid transparent;
+  border-bottom: 8px solid #006B63;
+  transition: border-color 200ms ease-out;
 }
