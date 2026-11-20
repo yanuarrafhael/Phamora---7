@@ -1,0 +1,27 @@
+html[data-tema="gelap"] {
+  --bg: #0B1F1D;
+  --putih: #1B2A28;
+  --hijau-tua: #7FE3D4;
+  --tosca: #20BFA9;
+  color-scheme: dark;
+}
+
+html[data-tema="gelap"] .sidebar { background: #08302C; }
+
+html[data-tema="gelap"] .sapaan { color: #E6F8F5; }
+html[data-tema="gelap"] th,
+html[data-tema="gelap"] td { border-bottom-color: #3C5753; }
+html[data-tema="gelap"] tbody tr:hover { background: #223533; }
+html[data-tema="gelap"] .aksi svg:hover { background: #2A4340; }
+html[data-tema="gelap"] .aksi svg:nth-of-type(2) { stroke: #E6F8F5; }
+
+html[data-tema="gelap"] .cari input { color: #E6F8F5; }
+html[data-tema="gelap"] .cari input::placeholder { color: #8FB5AF; }
+html[data-tema="gelap"] .cari svg { stroke: #8FB5AF; }
+
+html[data-tema="gelap"] .ikon { background: #20BFA9; }
+html[data-tema="gelap"] .ikon.polos { background: transparent; }
+html[data-tema="gelap"] .ikon.polos svg { stroke: #7FE3D4; }
+
+html[data-tema="gelap"] .batal:hover { background: #2A4340; }
+html[data-tema="gelap"] header img { filter: brightness(0) invert(1); }
