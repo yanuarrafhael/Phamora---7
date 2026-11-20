@@ -1,48 +1,24 @@
 .sidebar { width: 349px; background: #006B63; position: relative; flex-shrink: 0; height: 100%; }
+
 .logo-kotak { margin: 54px 0 0 54px; }
 .logo-kotak img { width: 223px; height: 68px; display: block; object-fit: contain; }
 .logo-kotak img.putihkan { filter: brightness(0) invert(1); }
 
-.sidebar nav { margin: 36px 0 0 54px; width: 241px; }
+.sidebar nav { margin: 36px 0 0 40px; width: 269px; display: flex; flex-direction: column; gap: 6px; }
 .sidebar nav a {
   display: flex; align-items: center; gap: 16px;
-  height: 53px; padding: 0 0 0 25px; margin: 0;
-  color: #fff; text-decoration: none; font-size: 21px;
-  border-radius: 8px; transition: background 200ms ease-out;
+  height: 53px; padding: 0 0 0 20px;
+  color: #fff; text-decoration: none; font-size: 21px; font-weight: 400;
+  border-radius: 8px;
+  transition: background 200ms ease-out, color 200ms ease-out;
 }
-.sidebar nav a:hover { background: rgba(255,255,255,0.15); }
+.sidebar nav a:hover { background: #20BFA9; }
 .sidebar nav a.aktif { background: rgba(255,255,255,0.22); font-weight: 600; }
-.sidebar nav a.celah { margin-top: 10px; }
-.sidebar nav svg {
-  width: 30px; height: 30px; flex-shrink: 0; fill: none; stroke: #fff;
-  stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-}
+.sidebar nav a.aktif:hover { background: #20BFA9; }
 
-.akun { position: absolute; left: 84px; bottom: 110px; width: 200px; }
-.akun-kotak {
-  background: #E6F8F5; border-radius: 8px; height: 52px;
-  display: flex; align-items: center; gap: 10px;
-  padding: 0 14px 0 10px; cursor: pointer; transition: background 200ms ease-out;
+.sidebar nav svg {
+.sidebar nav svg.isi { fill: #fff; stroke: none; }
+  width: 24px; height: 24px; flex-shrink: 0;
+  fill: none; stroke: #fff; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
 }
-.akun-kotak:hover { background: #cfeee9; }
-.akun-kotak .avatar { width: 30px; height: 30px; flex-shrink: 0; }
-.akun-info { flex: 1; }
-.akun-nama { color: #006B63; font-size: 16px; font-weight: 600; line-height: 18px; }
-.akun-peran { color: #20BFA9; font-size: 12px; font-weight: 500; }
-.panah {
-  width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent;
-  border-top: 8px solid #006B63; transition: transform 300ms ease-out;
-}
-.akun.buka .panah { transform: rotate(180deg); }
-.akun-menu {
-  position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-  background: #E6F8F5; border-radius: 8px;
-  max-height: 0; opacity: 0; overflow: hidden;
-  transition: max-height 300ms ease-out, opacity 300ms ease-out;
-}
-.akun.buka .akun-menu { max-height: 60px; opacity: 1; }
-.akun-menu a {
-  display: block; padding: 16px 20px; color: #006B63; font-weight: 600;
-  font-size: 18px; text-decoration: none; transition: background 200ms ease-out;
-}
-.akun-menu a:hover { background: #cfeee9; }
