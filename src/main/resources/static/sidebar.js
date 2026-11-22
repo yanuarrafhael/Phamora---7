@@ -20,7 +20,7 @@
   const MENU = [
     { nama: "Dashboard", ikon: "dashboard", href: "dashboard.html",    cocok: ["dashboard"] },
     { nama: "Data Obat", ikon: "obat",      href: "menuobat.html",     cocok: ["menuobat" ,"obat"] },
-    { nama: "Kategori",  ikon: "kategori",  href: "#",                 cocok: ["kategori"] },
+    { nama: "Kategori",  ikon: "kategori",  href: "menukategori.html", cocok: ["menukategori", "kategori"] },
     { nama: "Supplier",  ikon: "supplier",  href: "menusupplier.html", cocok: ["menusupplier", "supplier"] },
     { nama: "Resep",     ikon: "resep",     href: "menuresep.html",    cocok: ["menuresep", "resep"] },
     { nama: "Laporan",   ikon: "laporan",   href: "#",                 cocok: ["laporan"] },

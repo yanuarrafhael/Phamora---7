@@ -8,15 +8,14 @@
 <link rel="stylesheet" href="tema.css">
 <script src="tema.js"></script>
 <style>
-  :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; --oranye: #F26A1B; }
+ :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; --oranye: #F26A1B; }
   * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
   html, body { margin: 0; background: var(--bg); }
   body { zoom: 0.75; overflow-x: hidden; }
-  .layout { display: flex; min-height: calc(100vh / 0.75); }
-  .sidebar { min-height: 1024px; height: auto; }
-  .konten { flex: 1; padding: 20px 40px 50px 27px; min-width: 0; }
+  .layout { display: flex; height: calc(100vh / 0.75); min-height: 900px; }
 
-  .atas { display: flex; gap: 16px; align-items: center; }
+  .konten { flex: 1; padding: 35px 40px 50px 27px; min-width: 0; }
+
   .bar { position: relative; width: 760px; max-width: 100%; height: 34px; background: var(--putih); border-radius: 8px;
          display: flex; align-items: center; padding: 0 12px; gap: 10px; }
   .bar input { flex: 1; border: none; outline: none; font-size: 14px; color: #333; background: transparent; }
@@ -29,9 +28,10 @@
   .notif div { padding: 12px 16px; font-size: 14px; font-weight: 500; color: var(--hijau-tua); border-bottom: 1px solid #e3f1ee; }
   .notif div:last-child { border-bottom: none; }
   .notif b { color: var(--oranye); }
-  .tambah { height: 40px; padding: 0 22px; background: var(--hijau-tua); color: var(--putih); border-radius: 8px;
-            display: flex; align-items: center; font-size: 16px; font-weight: 600; text-decoration: none;
-            transition: background 200ms ease-out; white-space: nowrap; }
+    .baris-tambah { display: flex; justify-content: flex-end; margin-top: 35px; }
+  .tambah { width: 231px; height: 50px; background: var(--hijau-tua); color: var(--putih); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600;
+            text-decoration: none; transition: background 200ms ease-out; }
   .tambah:hover { background: var(--tosca); }
 
   .sapaan { margin: 60px 0 0 0; font-size: 36px; font-weight: 600; color: #000; }
@@ -46,7 +46,7 @@
   .stat .angka { font-size: 28px; font-weight: 600; color: #000; }
   .stat .ket { font-size: 11px; font-weight: 600; color: var(--tosca); }
 
-  .panel { background: var(--putih); margin: 50px 0 0 0; padding: 20px 22px 24px; width: 100%; display: flex; flex-direction: column; }
+  .panel { background: var(--putih); margin: 20px 0 0 0; padding: 20px 22px 24px; width: 100%; display: flex; flex-direction: column; }
   table { width: 100%; border-collapse: collapse; }
   th { background: var(--bg); color: var(--hijau-tua); font-size: 15px; font-weight: 600; text-align: left; height: 46px; padding: 0 8px; border-bottom: 2px solid #777; }
   td { color: var(--hijau-tua); font-size: 15px; font-weight: 600; height: 46px; padding: 0 8px; border-bottom: 1px solid #777; }
@@ -78,7 +78,7 @@
   <aside class="sidebar" id="sidebar"></aside>
 
   <main class="konten">
-    <div class="atas">
+        <div class="atas">
       <div class="bar">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.6" stroke-linecap="round"><circle cx="10" cy="10" r="7"/><path d="M15 15 L21 21"/></svg>
         <input id="cari" placeholder="Cari obat..." oninput="halaman = 1; tampil()">
@@ -87,9 +87,7 @@
         </div>
         <div class="notif" id="notif"></div>
       </div>
-      <a class="tambah" href="obat.html">+ Tambah Obat</a>
     </div>
-
     <div class="sapaan">Selamat Datang, Haechan Lee</div>
 
     <div class="kartu-row">
@@ -114,7 +112,9 @@
         <div class="ket" id="ket-resep">Memuat...</div>
       </div>
     </div>
-
+        <div class="baris-tambah">
+      <a class="tambah" href="obat.html">+ &nbsp;Tambah Obat</a>
+    </div>
     <section class="panel">
       <table>
         <thead>
