@@ -23,7 +23,7 @@
     { nama: "Kategori",  ikon: "kategori",  href: "menukategori.html", cocok: ["menukategori", "kategori"] },
     { nama: "Supplier",  ikon: "supplier",  href: "menusupplier.html", cocok: ["menusupplier", "supplier"] },
     { nama: "Resep",     ikon: "resep",     href: "menuresep.html",    cocok: ["menuresep", "resep"] },
-    { nama: "Laporan",   ikon: "laporan",   href: "#",                 cocok: ["laporan"] },
+    { nama: "Laporan",   ikon: "laporan",   href: "laporan.html",      cocok: ["laporan"] },
     { nama: "Pasien",    ikon: "pasien",    href: "menupasien.html",   cocok: ["menupasien", "pasien"] }
   ];
 

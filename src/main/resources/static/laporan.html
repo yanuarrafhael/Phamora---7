@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Laporan - Pharmora</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sidebar.css">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
+<style>
+  :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; }
+  * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  html, body { margin: 0; background: var(--bg); }
+  body { zoom: 0.75; overflow-x: hidden; }
+  .layout { display: flex; height: calc(100vh / 0.75); min-height: 900px; }
+
+  .konten { flex: 1; padding: 35px 40px 50px 27px; min-width: 0; }
+
+
+  .atas { display: flex; justify-content: space-between; align-items: flex-start; }
+  .atas h1 { margin: 0; font-size: 36px; font-weight: 600; color: #000; }
+  .atas p { margin: 6px 0 0; font-size: 12px; font-weight: 600; color: #000; }
+  .pdf { margin-top: 38px; height: 38px; padding: 0 22px; background: var(--putih); color: var(--hijau-tua);
+         border: 1px solid var(--tosca); border-radius: 19px; font-size: 14px; font-weight: 600; cursor: pointer;
+         transition: background 200ms ease-out, color 200ms ease-out; }
+  .pdf:hover { background: var(--tosca); color: var(--putih); }
+
+  .kartu-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 33px; margin-top: 30px; }
+  .stat { height: 143px; background: var(--putih); border: 3px solid #000; border-radius: 22px; padding: 20px 22px; }
+  .stat .judul { font-size: 12px; font-weight: 600; color: var(--tosca); }
+  .stat .angka { font-size: 28px; font-weight: 600; color: #000; margin: 14px 0 10px 12px; }
+  .stat .ket { font-size: 11px; font-weight: 600; color: var(--tosca); }
+
+  .tab-row { display: flex; gap: 22px; margin: 56px 0 0 4px; }
+  .tab { height: 36px; padding: 0 30px; background: var(--putih); color: var(--hijau-tua); border: 1px solid var(--tosca);
+         border-radius: 18px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 200ms ease-out, color 200ms ease-out; }
+ .tab:hover { background: var(--tosca); color: var(--putih); }
+
+  .panel { background: var(--putih); border-radius: 0px; margin-top: 46px; padding: 34px 22px 40px; min-height: 550px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--bg); color: var(--hijau-tua); font-size: 20px; font-weight: 600; text-align: left; height: 51px; padding: 0 10px; border-bottom: 2px solid #777; }
+  td { color: var(--hijau-tua); font-size: 20px; font-weight: 600; height: 51px; padding: 0 10px; border-bottom: 1px solid #777; }
+  tbody tr { transition: background 200ms ease-out; }
+  tbody tr:hover { background: #f1fbf9; }
+  .habis { color: #c0392b; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar"></aside>
+
+  <main class="konten">
+    <div class="atas">
+      <div>
+        <h1>Laporan</h1>
+        <p>Pantau stok dan transaksi obat dalam satu tempat.</p>
+      </div>
+      <button class="pdf">Unduh PDF</button>
+    </div>
+
+    <div class="kartu-row">
+      <div class="stat"><div class="judul">Total Obat</div><div class="angka">125</div><div class="ket">+ 1 bulan lalu</div></div>
+      <div class="stat"><div class="judul">Stok menipis</div><div class="angka">9</div><div class="ket">Perlu Perhatian</div></div>
+      <div class="stat"><div class="judul">Stok menipis</div><div class="angka">5</div><div class="ket">Perlu Restok</div></div>
+      <div class="stat"><div class="judul">Total Resep</div><div class="angka">5</div><div class="ket">0 Belum Selesai</div></div>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab aktif" onclick="pilih('stok', this)">STOK</button>
+      <button class="tab" onclick="pilih('supplier', this)">SUPPLIER</button>
+      <button class="tab" onclick="pilih('resep', this)">RESEP</button>
+    </div>
+
+    <section class="panel">
+      <table>
+        <thead id="kepala"></thead>
+        <tbody id="isi"></tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<script src="sidebar.js"></script>
+<script>
+const DATA = {
+  stok: {
+    kolom: ["NO", "Nama Obat", "Kategori", "Stok", "Status", "Keterangan"],
+    lebar: [7, 29, 18, 11, 17, 18],
+    baris: [
+      ["Paracetamol 500mg", "Analgestik", 100, "Tersedia", "Obat bebas"],
+      ["Amosicllin 250mg", "Antibiotik", 30, "Tersedia", "Resep dokter"],
+      ["Ibuprofen 400mg", "Analgestik", 59, "Tersedia", "Resep dokter"],
+      ["Vitamin C 400mg", "Vitamin", 43, "Tersedia", "Suplemen"],
+      ["Cefixime 100mg", "Antibiotik", 0, "Habis", "Resep dokter"],
+      ["Metronidazole 250mg", "Antibiotik", 29, "Tersedia", "Resep dokter"],
+      ["Tetrasiklin 500mg", "Antibiotik", 55, "Tersedia", "Resep dokter"],
+      ["Cefadroxil 500mg", "Antibiotik", 28, "Tersedia", "Resep dokter"]
+    ]
+  },
+  supplier: {
+    kolom: ["NO", "Nama Supplier", "Alamat", "No HP", "Email"],
+    lebar: [7, 26, 15, 20, 32],
+    baris: [
+      ["PT Kimia Farma", "Jakarta", "081211112222", "order@kimiafarma-dist.co.id"],
+      ["PT Kalbe Medika", "Jakarta", "081233334444", "sales@kalbemedika.co.id"],
+      ["PT Combiphar Utama", "Depok", "081255556666", "cs@combiphar-utama.co.id"],
+      ["PT K-24 Indoensia", "Bekasi", "081234567899", "order@24-indonesia.co.id"],
+      ["PT Sanbe Farma", "Bandung", "081277778888", "cs@sanbe-farma.co.id"],
+      ["PT Bio Farma", "Bandung", "081234455667", "pesan@biofarma.co.id"]
+    ]
+  },
+  resep: {
+    kolom: ["NO", "Nama Pasien", "Tanggal", "Status"],
+    lebar: [7, 38, 28, 27],
+    baris: [
+      ["Boy William", "2026-06-22", "Selesai"],
+      ["Siti Aisyah", "2026-06-22", "Selesai"],
+      ["Dewi Putri", "2026-10-19", "Belum"],
+      ["Hendra Gunawan", "2026-10-26", "Belum"],
+      ["Andi Saputra", "2026-10-26", "Belum"]
+    ]
+  }
+};
+
+function pilih(nama, tombol) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("aktif"));
+  tombol.classList.add("aktif");
+  const d = DATA[nama];
+  document.getElementById("kepala").innerHTML =
+    "<tr>" + d.kolom.map((k, i) => `<th style="width:${d.lebar[i]}%">${k}</th>`).join("") + "</tr>";
+  document.getElementById("isi").innerHTML = d.baris.map((b, i) =>
+    "<tr><td>" + (i + 1) + "</td>" +
+    b.map(c => `<td class="${c === "Habis" ? "habis" : ""}">${c}</td>`).join("") + "</tr>").join("");
+}
+
+pilih("stok", document.querySelector(".tab.aktif"));
+</script>
+</body>
+</html>

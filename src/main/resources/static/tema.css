@@ -1,27 +1,264 @@
-html[data-tema="gelap"] {
-  --bg: #0B1F1D;
-  --putih: #1B2A28;
-  --hijau-tua: #7FE3D4;
-  --tosca: #20BFA9;
-  color-scheme: dark;
-}
+html[data-tema="gelap"] { color-scheme: dark; }
 
-html[data-tema="gelap"] .sidebar { background: #08302C; }
+/* ===== UMUM (semua halaman) ===== */
+html[data-tema="gelap"],
+html[data-tema="gelap"] body { background: #0B1F1D; }
+/* sidebar tidak ditimpa, tetap hijau tua */
 
 html[data-tema="gelap"] .sapaan { color: #E6F8F5; }
-html[data-tema="gelap"] th,
-html[data-tema="gelap"] td { border-bottom-color: #3C5753; }
-html[data-tema="gelap"] tbody tr:hover { background: #223533; }
-html[data-tema="gelap"] .aksi svg:hover { background: #2A4340; }
-html[data-tema="gelap"] .aksi svg:nth-of-type(2) { stroke: #E6F8F5; }
 
-html[data-tema="gelap"] .cari input { color: #E6F8F5; }
-html[data-tema="gelap"] .cari input::placeholder { color: #8FB5AF; }
-html[data-tema="gelap"] .cari svg { stroke: #8FB5AF; }
+/* ===== KOLOM PENCARIAN (semua halaman): hijau tua ===== */
+html[data-tema="gelap"] :has(> input[placeholder*="Cari"]),
+html[data-tema="gelap"] :has(> input[placeholder*="cari"]),
+html[data-tema="gelap"] :has(> input[placeholder*="Pencarian"]) {
+  background: #006B63;
+  border-color: #006B63;
+}
 
-html[data-tema="gelap"] .ikon { background: #20BFA9; }
-html[data-tema="gelap"] .ikon.polos { background: transparent; }
-html[data-tema="gelap"] .ikon.polos svg { stroke: #7FE3D4; }
+html[data-tema="gelap"] input[placeholder*="Cari"],
+html[data-tema="gelap"] input[placeholder*="cari"],
+html[data-tema="gelap"] input[placeholder*="Pencarian"] {
+  background: transparent;
+  color: #FFFFFF;
+}
 
-html[data-tema="gelap"] .batal:hover { background: #2A4340; }
-html[data-tema="gelap"] header img { filter: brightness(0) invert(1); }
+html[data-tema="gelap"] input[placeholder*="Cari"]::placeholder,
+html[data-tema="gelap"] input[placeholder*="cari"]::placeholder,
+html[data-tema="gelap"] input[placeholder*="Pencarian"]::placeholder {
+  color: #BFE9E3;
+}
+
+/* Ikon kaca pembesar dan lonceng jadi putih */
+html[data-tema="gelap"] :has(> input[placeholder*="Cari"]) svg,
+html[data-tema="gelap"] :has(> input[placeholder*="cari"]) svg,
+html[data-tema="gelap"] :has(> input[placeholder*="Pencarian"]) svg {
+  stroke: #FFFFFF;
+}
+
+/* ===== HALAMAN SUPPLIER & RESEP (panel .kartu) ===== */
+html[data-tema="gelap"] .kartu { background: #00907F; }
+html[data-tema="gelap"] .kartu h1 { color: #E6F8F5; }
+
+html[data-tema="gelap"] .tambah { background: #006B63; color: #FFFFFF; }
+html[data-tema="gelap"] .tambah:hover { background: #005A53; }
+
+html[data-tema="gelap"] .kartu .cari input { flex: 1; width: auto; color: #FFFFFF; }
+html[data-tema="gelap"] .kartu .cari input::placeholder { color: #8FB5AF; }
+html[data-tema="gelap"] .kartu .cari svg { stroke: #FFFFFF; }
+
+/* Header tabel hijau tua, baris putih */
+html[data-tema="gelap"] .kartu th {
+  background: #006B63;
+  color: #FFFFFF;
+  border-bottom-color: #E6F8F5;
+}
+html[data-tema="gelap"] .kartu td {
+  background: #FFFFFF;
+  color: #006B63;
+  border-bottom-color: #8A8A8A;
+}
+html[data-tema="gelap"] .kartu tbody tr:hover td { background: #F1FBF9; }
+
+/* ===== TOMBOL HALAMAN (pagination): mint, teks hijau tua ===== */
+html[data-tema="gelap"] .halaman button {
+  background: #E6F8F5;
+  border: 1px solid #E6F8F5;
+  color: #006B63;
+  border-radius: 10px;
+}
+html[data-tema="gelap"] .halaman button:hover {
+  background: #20BFA9;
+  border-color: #20BFA9;
+  color: #FFFFFF;
+}
+html[data-tema="gelap"] .halaman button svg { stroke: #006B63; }
+html[data-tema="gelap"] .halaman button:hover svg { stroke: #FFFFFF; }
+
+/* ===== LAPORAN: judul, tombol Unduh PDF, tab ===== */
+html[data-tema="gelap"] .atas h1,
+html[data-tema="gelap"] .atas p { color: #E6F8F5; }
+
+html[data-tema="gelap"] .pdf {
+  background: #006B63;
+  color: #FFFFFF;
+  border-color: #E6F8F5;
+}
+html[data-tema="gelap"] .pdf:hover {
+  background: #20BFA9;
+  color: #FFFFFF;
+}
+
+html[data-tema="gelap"] .tab {
+  background: #006B63;
+  color: #FFFFFF;
+  border-color: #E6F8F5;
+}
+html[data-tema="gelap"] .tab:hover {
+  background: #20BFA9;
+  color: #FFFFFF;
+}
+html[data-tema="gelap"] .tab.aktif {
+  background: #20BFA9;
+  color: #FFFFFF;
+  border-color: #20BFA9;
+}
+
+/* ===== DASHBOARD & LAPORAN: kartu statistik ===== */
+html[data-tema="gelap"] .stat { background: #006B63; border-color: #E6F8F5; }
+html[data-tema="gelap"] .stat .judul,
+html[data-tema="gelap"] .stat .angka,
+html[data-tema="gelap"] .stat .ket { color: #FFFFFF; }
+
+html[data-tema="gelap"] .kartu-row .stat:nth-child(2) .judul,
+html[data-tema="gelap"] .kartu-row .stat:nth-child(2) .ket,
+html[data-tema="gelap"] .kartu-row .stat:nth-child(3) .judul,
+html[data-tema="gelap"] .kartu-row .stat:nth-child(3) .ket { color: #FFB27A; }
+
+/* ===== DASHBOARD & LAPORAN: panel tabel ===== */
+html[data-tema="gelap"] .panel { background: #00907F; border-radius: 0; }
+html[data-tema="gelap"] .panel th { background: #006B63; color: #FFFFFF; border-bottom-color: #00907F; }
+html[data-tema="gelap"] .panel td { background: #FFFFFF; color: #00907F; border-bottom-color: #777; }
+html[data-tema="gelap"] .panel tbody tr:hover td { background: #F1FBF9; }
+
+/* Status di tabel (samakan nama class dengan CSS mode terang) */
+html[data-tema="gelap"] .panel td.mau-kedaluwarsa { color: #F57C20; }
+html[data-tema="gelap"] .panel td.kedaluwarsa,
+html[data-tema="gelap"] .panel td.habis { color: #C0392B; }
+
+/* ===== HALAMAN KATEGORI ===== */
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) :is(.kartu, .panel, .kotak, .wrap, .tabel-wrap) {
+  background: #006B63;
+  border: 1px solid #20BFA9;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+html[data-tema="gelap"] :has(> input[placeholder*="Kategori"]) {
+  background: #0B1F1D;
+  border: 1px solid #20BFA9;
+  border-radius: 10px;
+}
+html[data-tema="gelap"] input[placeholder*="Kategori"] { color: #FFFFFF; }
+html[data-tema="gelap"] input[placeholder*="Kategori"]::placeholder { color: #E6F8F5; }
+html[data-tema="gelap"] :has(> input[placeholder*="Kategori"]) svg { stroke: #FFFFFF; }
+
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) :is(.btn-cari, .tombol-cari, .cari-btn, button[type="submit"]) {
+  background: #D9D9D9;
+  border-color: #D9D9D9;
+  color: #0B1F1D;
+}
+
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) th {
+  background: #004E48;
+  color: #FFFFFF;
+  border-bottom: 1px solid #20BFA9;
+}
+
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) td {
+  background: #006B63;
+  color: #FFFFFF;
+  border-bottom: 1px solid #20BFA9;
+}
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) tbody tr:hover td {
+  background: #007A71;
+}
+
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) .aksi svg:nth-of-type(2) { stroke: #0B1F1D; }
+
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) .halaman button {
+  background: transparent;
+  border: 1px solid #20BFA9;
+  color: #E6F8F5;
+}
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) .halaman button:hover {
+  background: #20BFA9;
+  color: #FFFFFF;
+}
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) .halaman button svg { stroke: #E6F8F5; }
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) .halaman button:hover svg { stroke: #FFFFFF; }
+
+html[data-tema="gelap"] body:has(input[placeholder*="Kategori"]) a[href*="kategori"]:not(.sidebar a) {
+  background: #006B63;
+  color: #FFFFFF;
+}
+
+/* ===== KOLOM CARI SUPPLIER & RESEP: hitam, rounded, garis tepi tosca (paling bawah) ===== */
+html[data-tema="gelap"] body:has(input[placeholder*="upplier"]) .kartu .cari,
+html[data-tema="gelap"] body:has(input[placeholder*="Pasien"]) .kartu .cari {
+  background: #1E1E1E;
+  border: 1px solid #20BFA9;
+  border-radius: 10px;
+  height: 48px;
+  width: 96%;
+  padding: 0 16px;
+  margin: 20px 0 30px;
+}
+/* ===== HALAMAN FORM (obat, supplier, resep, pasien): mode gelap ===== */
+html[data-tema="gelap"] body:has(button.simpan) { background: #0B1F1D; }
+
+/* Tautan Kembali */
+html[data-tema="gelap"] body:has(button.simpan) .kembali { color: #20BFA9; }
+html[data-tema="gelap"] body:has(button.simpan) .kembali:hover { color: #E6F8F5; }
+
+/* Judul & label */
+html[data-tema="gelap"] body:has(button.simpan) h1,
+html[data-tema="gelap"] body:has(button.simpan) label { color: #0A8F80; }
+
+/* Kolom isian */
+html[data-tema="gelap"] body:has(button.simpan) input,
+html[data-tema="gelap"] body:has(button.simpan) textarea {
+  background: #006B63;
+  color: #E6F8F5;
+}
+html[data-tema="gelap"] body:has(button.simpan) input::placeholder,
+html[data-tema="gelap"] body:has(button.simpan) textarea::placeholder {
+  color: #20BFA9 !important;
+}
+
+/* Dropdown kategori (khusus form obat) */
+html[data-tema="gelap"] body:has(button.simpan) .dropdown-kotak {
+  background: #006B63;
+  color: #20BFA9;
+}
+html[data-tema="gelap"] body:has(button.simpan) .dropdown.terpilih .dropdown-kotak { color: #E6F8F5; }
+html[data-tema="gelap"] body:has(button.simpan) .dropdown-panah { border-top-color: #E6F8F5; }
+html[data-tema="gelap"] body:has(button.simpan) .dropdown-daftar {
+  background: #006B63;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+}
+html[data-tema="gelap"] body:has(button.simpan) .pilihan { color: #E6F8F5; }
+html[data-tema="gelap"] body:has(button.simpan) .pilihan:hover { background: #007A71; }
+html[data-tema="gelap"] body:has(button.simpan) .dropdown-daftar::-webkit-scrollbar-thumb { background: #20BFA9; }
+
+/* Tombol: Batal hijau tua, Simpan mint (sesuai desain) */
+html[data-tema="gelap"] body:has(button.simpan) .batal {
+  background: #006B63;
+  color: #20BFA9;
+}
+html[data-tema="gelap"] body:has(button.simpan) .batal:hover { background: #007A71; }
+html[data-tema="gelap"] body:has(button.simpan) .simpan {
+  background: #E6F8F5;
+  color: #20BFA9;
+}
+html[data-tema="gelap"] body:has(button.simpan) .simpan:hover {
+  background: #20BFA9;
+  color: #FFFFFF;
+}
+
+/* Popup */
+/* ===== POPUP (semua halaman, mode gelap) ===== */
+html[data-tema="gelap"] #popup {
+  background: #006B63;
+  color: #FFFFFF;
+}
+html[data-tema="gelap"] #pesan { color: #FFFFFF; }
+
+/* Lingkaran ikon centang / silang: mint, simbol hijau tua */
+html[data-tema="gelap"] #popup .ikon { background: #E6F8F5; }
+html[data-tema="gelap"] #popup .ikon svg path { stroke: #006B63; }
+
+/* Ikon tempat sampah (hapus): tanpa lingkaran, garis mint */
+html[data-tema="gelap"] #popup .ikon.polos { background: transparent; }
+html[data-tema="gelap"] #popup .ikon.polos svg path,
+html[data-tema="gelap"] #popup .ikon.polos svg rect { stroke: #E6F8F5; }
+html[data-tema="gelap"] body:has(button.simpan) #pesan { color: #E6F8F5; }

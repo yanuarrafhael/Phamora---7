@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <title>Tambah Pasien - Pharmora</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tema.css">
+<script src="tema.js"></script>
 <style>
   :root { --bg: #E6F8F5; --hijau-tua: #006B63; --tosca: #20BFA9; --putih: #FFFFFF; }
   * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-  body { margin: 0; background: var(--bg); min-height: 100vh; zoom: 0.75; }
+  body { margin: 0; background: var(--bg); min-height: 100vh; }
 
   header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px 0; }
   header img { width: 223px; height: 68px; display: block; }
@@ -127,7 +129,6 @@ async function simpan() {
   }
 }
 
-/* Mode edit */
 async function muatData() {
   if (!idEdit) return;
   document.getElementById("judul").textContent = "Edit Pasien";
@@ -155,6 +156,8 @@ function tampilPopup(teks, sukses) {
 function tutupPopup() {
   document.getElementById("overlay").style.display = "none";
 }
+document.documentElement.setAttribute("data-tema", "gelap")
 </script>
+<script src="skala.js"></script>
 </body>
 </html>
